@@ -1,0 +1,454 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="conHardDrive-type" conHardDrive="text/html; charset=UTF-8">
+  <title>Hackr</title>
+  
+  <script type='text/javascript' src='//code.jquery.com/jquery-2.1.0.js'></script>
+  
+  
+  
+  
+  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    
+    
+  
+  <style type='text/css'>
+    .header {
+    text-align:center;
+}
+.container {
+    padding:25px;
+}
+.row {
+    margin-bottom:2px;
+    text-align:center;
+}
+.col.md-6, .col-xs-4, col-xs-3, col-xs-6 {
+    padding-left:1px;
+    padding-right:1px;
+}
+#info {
+    overflow:hidden;
+    max-height:200px;
+}
+#info p {
+    text-align:left;
+}
+.well {
+    padding-top:0;
+}
+  </style>
+  
+
+
+<script type='text/javascript'>//<![CDATA[ 
+$(window).load(function(){
+// Variables
+var Ram = {
+    name: "Ram",
+    amount: 0,
+    increment: 0
+},
+Bandwidth = {
+    name: "Bandwidth",
+    amount: 0,
+    increment: 0
+},
+energy = {
+    name: "energy",
+    amount: 0,
+    increment: 0
+},
+BotNet = {
+    name: "BotNet",
+    amount: 0,
+    BotNet: {
+        increment: 1,
+        amount: 0
+    },
+    Trojan: {
+        increment: 1,
+        amount: 0
+    },
+    DDoS: {
+        increment: 1,
+        amount: 0
+    }
+}, // Hard Drive Setup
+HardDrive = {
+    amount: 0,
+    residents: 1,
+    cost: {
+        Ram: 30
+    }
+},
+house = {
+    amount: 0,
+    residents: 4,
+    cost: {
+        Ram: 75,
+        Bandwidth: 25
+    }
+};
+
+var maxPop = (HardDrive.residents * HardDrive.amount) + (house.residents * house.amount);
+var clickIncrement = 1;
+
+$(document).ready(function () {
+    updateValues();
+});
+
+// Display the correct values.
+function updateValues() {
+    document.getElementById("RamAmount").innerHTML = Ram.amount;
+    document.getElementById("BandwidthAmount").innerHTML = Bandwidth.amount;
+    document.getElementById("energyAmount").innerHTML = energy.amount;
+    document.getElementById("RamIncrement").innerHTML = Ram.increment;
+    document.getElementById("BandwidthIncrement").innerHTML = Bandwidth.increment;
+    document.getElementById("energyIncrement").innerHTML = energy.increment;
+    document.getElementById("BotNetamount").innerHTML = BotNet.amount;
+    document.getElementById("maxPop").innerHTML = maxPop;
+    document.getElementById("BotNetAmount").innerHTML = BotNet.BotNet.amount;
+    document.getElementById("Trojanamount").innerHTML = BotNet.Trojan.amount;
+    document.getElementById("DDoSamount").innerHTML = BotNet.DDoS.amount;
+    document.getElementById("HardDriveAmount").innerHTML = HardDrive.amount;
+    document.getElementById("HardDriveCostRam").innerHTML = HardDrive.cost.Ram;
+    document.getElementById("HardDriveResidents").innerHTML = HardDrive.residents;
+    document.getElementById("raidAmount").innerHTML = house.amount;
+    document.getElementById("houseCostRam").innerHTML = house.cost.Ram;
+    document.getElementById("houseCostBandwidth").innerHTML = house.cost.Bandwidth;
+    document.getElementById("houseResidents").innerHTML = house.residents;
+}
+
+// Click for Ram,Bandwidth and Get some Energy Drinks
+$('#addRam').click(function () {
+    Ram.amount = Ram.amount + clickIncrement;
+    updateValues();
+});
+
+$('#addBandwidth').click(function () {
+    Bandwidth.amount = Bandwidth.amount + clickIncrement;
+    updateValues();
+});
+
+$('#buyEnergyDrink').click(function () {
+    energy.amount = energy.amount + clickIncrement;
+    updateValues();
+});
+
+
+// Create BotNets
+$('#createBotNet').click(function () {
+    if (BotNet.amount < maxPop) {
+        if (energy.amount >= 10) {
+            energy.amount = energy.amount - 10;
+            BotNet.amount++;
+            BotNet.BotNet.amount++;
+            updateValues();
+            beginGatherRam();
+        } else {
+            $("#info").prepend($('<p>You need more energy.</p>').fadeIn('slow'));
+        }
+    } else {
+        $("#info").prepend($('<p>You need to add more hard rives.</p>').fadeIn('slow'));
+    }
+});
+
+$('#createTrojan').click(function () {
+    if (BotNet.amount < maxPop) {
+        if (energy.amount >= 10) {
+            energy.amount = energy.amount - 10;
+            BotNet.amount++;
+            BotNet.Trojan.amount++;
+            updateValues();
+            beginGatherBandwidth();
+        } else {
+            $("#info").prepend($('<p>You need more energy.</p>').fadeIn('slow'));
+        }
+    } else {
+        $("#info").prepend($('<p>You need to add more Hard Drives.</p>').fadeIn('slow'));
+    }
+});
+
+$('#createDDoS').click(function () {
+    if (BotNet.amount < maxPop) {
+        if (energy.amount >= 10) {
+            energy.amount = energy.amount - 10;
+            BotNet.amount++;
+            BotNet.DDoS.amount++;
+            updateValues();
+            beginbuyEnergyDrink();
+        } else {
+            $("#info").prepend($('<p>You need more energy.</p>').fadeIn('slow'));
+        }
+    } else {
+        $("#info").prepend($('<p>You need to add more Hard Drives.</p>').fadeIn('slow'));
+    }
+});
+
+// BotNets Gather Ram
+function beginGatherRam() {
+    nIntervId = setInterval(gatherRam, 5000);
+}
+
+function gatherRam() {
+    Ram.increment = BotNet.BotNet.increment * BotNet.BotNet.amount;
+    Ram.amount = Ram.amount + Ram.increment;
+    updateValues();
+}
+
+// Trojan Gather Bandwidth
+function beginGatherBandwidth() {
+    nIntervId = setInterval(gatherBandwidth, 5000);
+}
+
+function gatherBandwidth() {
+    Bandwidth.increment = BotNet.Trojan.increment * BotNet.Trojan.amount;
+    Bandwidth.amount = Bandwidth.amount + Bandwidth.increment;
+    updateValues();
+}
+
+// DDoS Gather energy
+function beginbuyEnergyDrink() {
+    nIntervId = setInterval(buyEnergyDrink, 5000);
+}
+
+function buyEnergyDrink() {
+    energy.increment = BotNet.DDoS.increment * BotNet.DDoS.amount;
+    energy.amount = energy.amount + energy.increment;
+    updateValues();
+}
+
+// Build a HardDrive
+$('#addHardDrive').click(function () {
+    if (Ram.amount >= HardDrive.cost.Ram) {
+        Ram.amount = Ram.amount - HardDrive.cost.Ram;
+        HardDrive.amount++;
+        HardDrive.cost.Ram = HardDrive.cost.Ram * 1.2;
+        HardDrive.cost.Ram = HardDrive.cost.Ram.toFixed(0);
+        maxPop = maxPop + HardDrive.residents;
+        updateValues();
+    } else {
+        $("#info").prepend($('<p>You need more Ram.</p>').fadeIn('slow'));
+    }
+});
+
+// Build a house
+$('#addRaid').click(function () {
+    if (Ram.amount >= house.cost.Ram && Bandwidth.amount >= house.cost.Bandwidth) {
+        Ram.amount = Ram.amount - house.cost.Ram;
+        Bandwidth.amount = Bandwidth.amount - house.cost.Bandwidth;
+        house.amount++;
+        house.cost.Ram = house.cost.Ram * 1.2;
+        house.cost.Bandwidth = house.cost.Bandwidth * 1.2;
+        house.cost.Ram = house.cost.Ram.toFixed(0);
+        house.cost.Bandwidth = house.cost.Bandwidth.toFixed(0);
+        maxPop = maxPop + house.residents;
+        updateValues();
+    } else {
+        $("#info").prepend($('<p>You need more bandwidth.</p>').fadeIn('slow'));
+    }
+});
+
+// Upgrades
+$('#upgradeTwoFingers').click(function () {
+    if (Ram.amount >= 100 && Bandwidth.amount >= 100 && energy.amount >= 100) {
+        Ram.amount = Ram.amount - 100;
+        Bandwidth.amount = Bandwidth.amount - 100;
+        energy.amount = energy.amount - 100;
+        clickIncrement = clickIncrement + 1;
+        $('.upgradeTwoFingers').addClass('hidden');
+        updateValues();
+    } else {
+        $("#info").prepend($('<p>You need more computing power.</p>').fadeIn('slow'));
+    }
+});
+
+$('#upgradeBunkBeds').click(function () {
+    if (Ram.amount >= 100 && Bandwidth.amount >= 100 && energy.amount >= 100) {
+        Ram.amount = Ram.amount - 100;
+        Bandwidth.amount = Bandwidth.amount - 100;
+        energy.amount = energy.amount - 100;
+        house.residents = 5;
+        maxPop = maxPop + house.amount;
+        $('.upgradeBunkBeds').addClass('hidden');
+        updateValues();
+    } else {
+        $("#info").prepend($('<p>You need more computing power.</p>').fadeIn('slow'));
+    }
+});
+
+$('#upgradeGymWorkout').click(function () {
+    if (Ram.amount >= 100 && Bandwidth.amount >= 100 && energy.amount >= 100) {
+        Ram.amount = Ram.amount - 100;
+        Bandwidth.amount = Bandwidth.amount - 100;
+        energy.amount = energy.amount - 100;
+        BotNet.BotNet.increment = 2;
+        BotNet.Trojan.increment = 2;
+        BotNet.DDoS.increment = 2;
+        $('.upgradeGymWorkout').addClass('hidden');
+        updateValues();
+    } else {
+        $("#info").prepend($('<p>You need more computing power.</p>').fadeIn('slow'));
+    }
+});
+
+/* TESTING VALUES
+Ram.amount = 500;
+Bandwidth.amount = 500;
+energy.amount = 500;*/
+});//]]>  
+
+</script>
+
+
+</head>
+<body>
+  <div class="row header">
+    <div class="col-md-12">
+<div class="page-header">
+  <h1>Hackr <small>v.01b</small></h1>
+</div>
+
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-xs-4">
+                    <button type="button" id="addRam" class="btn btn-primary btn-block">Add Ram</button>
+                </div>
+                <div class="col-xs-4"> <span id="RamAmount" class="btn btn-default btn-block disabled">0</span>
+
+                </div>
+                <div class="col-xs-4"> <span class="btn btn-default btn-block disabled">
+            <span id="RamIncrement">0</span><span>/5s</span>
+</span>
+                </div>
+            </div>
+            <!--.row-->
+            <div class="row">
+                <div class="col-xs-4">
+                    <button type="button" id="addBandwidth" class="btn btn-primary btn-block">Buy Bandwidth</button>
+                </div>
+                <div class="col-xs-4"> <span id="BandwidthAmount" class="btn btn-default btn-block disabled">0</span>
+
+                </div>
+                <div class="col-xs-4"> <span class="btn btn-default btn-block disabled">
+            <span id="BandwidthIncrement">0</span><span>/5s</span>
+</span>
+                </div>
+            </div>
+            <!--.row-->
+            <div class="row">
+                <div class="col-xs-4">
+                    <button type="button" id="buyEnergyDrink" class="btn btn-primary btn-block">Buy Red Cow</button>
+                </div>
+                <div class="col-xs-4"> <span id="energyAmount" class="btn btn-default btn-block disabled">0</span>
+
+                </div>
+                <div class="col-xs-4"> <span class="btn btn-default btn-block disabled">
+            <span id="energyIncrement">0</span><span>/5s</span>
+</span>
+                </div>
+            </div>
+            <!--.row-->
+            <hr>
+        </div>
+        <!---->
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="btn-group btn-group-justified"> <span class="btn btn-default disabled">Systems PWND</span>
+ <span id="BotNetamount" class="btn btn-default btn-block disabled">0</span>
+
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="btn-group btn-group-justified"> <span class="btn btn-default disabled">Max</span>
+ <span id="maxPop" class="btn btn-default disabled">0</span>
+
+                    </div>
+                </div>
+            </div>
+            <!--.row-->
+            <div class="row" style="margin-right:-1px; margin-left:-1px;">
+                <div class="col-xs-4 more-BotNets">
+                    <button type="button" id="createBotNet" class="btn btn-block btn-success">BotNet (10 Ram)</button>
+                </div>
+                <div class="col-xs-4 more-BotNets">
+                    <button type="button" id="createTrojan" class="btn btn-block btn-success">Trojan (10 Ram)</button>
+                </div>
+                <div class="col-xs-4 more-BotNets">
+                    <button type="button" id="createDDoS" class="btn btn-block btn-success">DDoS (10 Ram)</button>
+                </div>
+            </div>
+            <!--.row-->
+            <div class="row" style="margin-right:-1px; margin-left:-1px;">
+                <div class="col-xs-4 more-BotNets">
+                    <button type="button" id="BotNetAmount" class="btn btn-block btn-default disabled">0</button>
+                </div>
+                <div class="col-xs-4 more-BotNets">
+                    <button type="button" id="Trojanamount" class="btn btn-block btn-default disabled">0</button>
+                </div>
+                <div class="col-xs-4 more-BotNets">
+                    <button type="button" id="DDoSamount" class="btn btn-block btn-default disabled">0</button>
+                </div>
+            </div>
+            <!--.row-->
+            <hr>
+        </div>
+        <!--.col-md-6-->
+    </div>
+    <!--.row-->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-xs-4">
+                    <button type="button" id="addHardDrive" class="btn btn-danger btn-block">Add Hard-Drive</button>
+                </div>
+                <div class="col-xs-4">
+                    <button type="button" id="HardDriveAmount" class="btn btn-default btn-block disabled">0</button>
+                </div>
+                <div class="col-xs-4">
+                     <h6>Cost: <span id="HardDriveCostRam">0</span> Ram | +<span id="HardDriveResidents">0</span> System</h6>
+
+                </div>
+            </div>
+            <!--.row-->
+            <div class="row">
+                <div class="col-xs-4">
+                    <button type="button" id="addRaid" class="btn btn-danger btn-block">Add Raid</button>
+                </div>
+                <div class="col-xs-4">
+                    <button type="button" id="raidAmount" class="btn btn-default btn-block disabled">0</button>
+                </div>
+                <div class="col-xs-4">
+                     <h6>Cost: <span id="houseCostRam">0</span> Ram, <span id="houseCostBandwidth">0</span> Bandwidth | +<span id="houseResidents">0</span> System</h6>
+
+                </div>
+            </div>
+            <!--.row-->
+            <hr>
+        </div>
+        <!--.col-md-6-->
+        <div class="col-md-6 well">
+            <h3>Information</h3>
+
+            <div id="info"></div>
+        </div>
+        <!--.col-md-6-->
+    </div>
+    <!--.row-->
+</div>
+<!--.container-->
+  
+</body>
+
+
+</html>
+
